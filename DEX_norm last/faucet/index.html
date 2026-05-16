@@ -1,0 +1,608 @@
+<!DOCTYPE html><html lang="en"><head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="/_next/static/css/947253a1e855b7f2.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/webpack-bcc54b1dc9f2db2e.js"/><script src="/_next/static/chunks/fd9d1056-a48496235ffb194c.js" async=""></script><script src="/_next/static/chunks/117-b81a939094b8f23b.js" async=""></script><script src="/_next/static/chunks/main-app-b1536fa38f957b6f.js" async=""></script><script src="/_next/static/chunks/480-acc42c0ebf634cd5.js" async=""></script><script src="/_next/static/chunks/64-66340eb1755c93b9.js" async=""></script><script src="/_next/static/chunks/app/faucet/page-f3f1d3ba5c8e809d.js" async=""></script><script src="/_next/static/chunks/648-475d793092845840.js" async=""></script><script src="/_next/static/chunks/app/layout-771502fd57edcf2e.js" async=""></script><title>DrunkenCats DEX — Trade on LitVM</title><meta name="description" content="Decentralized exchange on LitVM LiteForge. Swap tokens, provide liquidity, and earn fees."/><script src="/_next/static/chunks/polyfills-42372ed130431b0a.js" noModule=""></script>
+
+
+<style id="dc-redesign">
+
+/* =======================================================
+   DrunkenCats DEX — Redesign v4
+   Source: index (2).html (1:1 copy)
+   Only CSS changed. Zero JS/logic touched.
+   ======================================================= */
+
+/* Google Fonts loaded non-blocking via <link> tags in <head> — no @import needed */
+
+/* ── RESET + ROOT TOKENS ──────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --bg:    #050508; --s1: #0a0a10; --s2: #0f0f18; --card: #121220;
+  --border: rgba(255,255,255,.05); --border-h: rgba(255,255,255,.1);
+  --t1: #f4f4f8; --t2: #6b6b80; --t3: #3a3a50;
+  --purple: #a855f7; --pink: #ec4899; --amber: #f59e0b; --blue: #6366f1;
+  --grad:  linear-gradient(135deg,#a855f7 0%,#ec4899 50%,#f59e0b 100%);
+  --grad2: linear-gradient(135deg,#6366f1,#a855f7);
+  /* legacy compat */
+  --cat-dark:#0a0a12; --cat-darker:#050508; --cat-card:#121220;
+  --cat-border:#1a1a2e; --cat-purple:#a855f7; --cat-pink:#ec4899; --cat-amber:#f59e0b;
+}
+
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+body {
+  font-family: 'Sora', system-ui, sans-serif !important;
+  background: var(--bg) !important;
+  color: var(--t1) !important;
+  overflow-x: hidden;
+}
+body, button, input, select, textarea {
+  font-family: 'Sora', system-ui, sans-serif !important;
+}
+.font-mono, code, pre, [class*="mono"] { font-family: 'Space Mono', monospace !important; }
+.font-display, [class*="font-display"]  { font-family: 'Sora', system-ui, sans-serif !important; font-weight: 800 !important; }
+a { text-decoration: none; color: inherit; }
+
+/* ── ANIMATED GRID BG ───────────────────────────── */
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-size: 60px 60px;
+  background-image:
+    linear-gradient(rgba(168,85,247,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(168,85,247,.03) 1px, transparent 1px);
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black, transparent);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black, transparent);
+}
+/* Beam sweep */
+body::after {
+  content: ''; position: fixed; top: 0; left: -200px;
+  width: 200px; height: 100vh; z-index: 0; pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(168,85,247,.04), transparent);
+  animation: dcBeam 8s ease-in-out infinite;
+}
+@keyframes dcBeam { 0%{left:-200px} 50%{left:calc(100% + 200px)} 100%{left:-200px} }
+
+/* Glow orbs — injected via inject.js */
+.dc-glow { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(120px); }
+.dc-glow-1 { width:500px;height:500px;background:rgba(168,85,247,.08);top:-100px;right:-100px;   animation:dcDrift 20s ease-in-out infinite; }
+.dc-glow-2 { width:400px;height:400px;background:rgba(236,72,153,.06);bottom:-100px;left:-100px; animation:dcDrift 25s ease-in-out infinite reverse; }
+.dc-glow-3 { width:300px;height:300px;background:rgba(99,102,241,.05);top:40%;left:60%;          animation:dcDrift 18s ease-in-out 5s infinite; }
+@keyframes dcDrift { 0%,100%{transform:translate(0,0)} 33%{transform:translate(40px,-30px)} 66%{transform:translate(-30px,40px)} }
+
+/* Stack order */
+main, header, section, footer, body > div, body > nav { position: relative; z-index: 1; }
+
+/* ── CSS CAT MASCOT (1:1 from index(2).html) ──── */
+.cat-mascot { position: relative; z-index: 2; animation: catWobble 4s ease-in-out infinite; }
+@keyframes catWobble { 0%,100%{transform:rotate(-3deg)} 50%{transform:rotate(3deg)} }
+.cat-body {
+  position: relative; width: 140px; height: 130px;
+  background: linear-gradient(135deg,#2a2a3e,#1e1e30);
+  border-radius: 50% 50% 45% 45%; margin: 30px auto 0;
+  border: 2px solid rgba(168,85,247,.3);
+  box-shadow: 0 0 40px rgba(168,85,247,.15), inset 0 -20px 30px rgba(0,0,0,.3);
+}
+.cat-ear {
+  position: absolute; top: -22px; width: 0; height: 0;
+  border-left: 22px solid transparent; border-right: 22px solid transparent;
+  border-bottom: 35px solid #2a2a3e;
+}
+.cat-ear::after {
+  content: ''; position: absolute; top: 10px; left: -12px;
+  border-left: 12px solid transparent; border-right: 12px solid transparent;
+  border-bottom: 20px solid var(--pink); opacity: .6;
+}
+.cat-ear.left  { left:15px;  transform: rotate(-10deg); }
+.cat-ear.right { right:15px; transform: rotate(10deg);  }
+.cat-face { position: absolute; top: 25px; left: 50%; transform: translateX(-50%); width: 100px; }
+.cat-eyes { display: flex; justify-content: space-between; margin-bottom: 8px; padding: 0 5px; }
+.cat-eye  {
+  width: 28px; height: 28px;
+  background: radial-gradient(circle,#fbbf24,#f59e0b);
+  border-radius: 50%; position: relative;
+  box-shadow: 0 0 15px rgba(251,191,36,.4);
+}
+.cat-eye::after {
+  content: ''; position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%); width: 10px; height: 18px;
+  background: #111; border-radius: 50%;
+}
+.cat-eye.drunk { height: 16px; margin-top: 6px; }
+.cat-eye.drunk::after { height: 10px; width: 8px; }
+.cat-nose  { width: 12px; height: 8px; background: var(--pink); border-radius: 50%; margin: 0 auto 4px; }
+.cat-mouth { width: 30px; height: 12px; margin: 0 auto; border-bottom: 2.5px solid rgba(255,255,255,.4); border-radius: 0 0 50% 50%; }
+.cat-mouth::before {
+  content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+  bottom: -1px; width: 1px; height: 8px; background: rgba(255,255,255,.4);
+}
+.cat-blush { position: absolute; top: 48px; width: 20px; height: 10px; background: rgba(236,72,153,.25); border-radius: 50%; }
+.cat-blush.left  { left:10px; }
+.cat-blush.right { right:10px; }
+.beer-mug {
+  position: absolute; bottom: 10px; right: -25px; font-size: 2.2rem;
+  animation: mugSwing 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px rgba(251,191,36,.4));
+}
+@keyframes mugSwing { 0%,100%{transform:rotate(-10deg)} 50%{transform:rotate(15deg)} }
+.dizzy-stars {
+  position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+  font-size: .9rem; letter-spacing: 8px;
+  animation: starsRotate 3s linear infinite;
+}
+@keyframes starsRotate { from{transform:translateX(-50%) rotate(0deg)} to{transform:translateX(-50%) rotate(360deg)} }
+
+/* ── HEADER ─────────────────────────────────────── */
+header.sticky, header[class*="sticky"] {
+  position: fixed !important;
+  top: 16px !important; left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: min(960px, calc(100% - 2rem)) !important;
+  max-width: 960px !important; height: 56px !important;
+  padding: 0 6px 0 16px !important;
+  display: flex !important; align-items: center !important; justify-content: space-between !important;
+  background: rgba(10,10,16,.6) !important;
+  backdrop-filter: blur(24px) saturate(1.5) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(1.5) !important;
+  border: 1px solid var(--border) !important; border-radius: 16px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,.4) !important; z-index: 99 !important;
+}
+header.sticky > div, header[class*="sticky"] > div {
+  width: 100% !important; height: 100% !important;
+  max-width: none !important; padding: 0 !important;
+  display: flex !important; align-items: center !important; justify-content: space-between !important;
+}
+main { padding-top: 84px !important; }
+
+/* ── NAV LINKS ──────────────────────────────────── */
+header nav a, header nav a:visited {
+  padding: 6px 12px !important; border-radius: 8px !important;
+  font-size: .8rem !important; font-weight: 500 !important;
+  color: var(--t2) !important; letter-spacing: .01em !important;
+  transition: color .2s, background .2s !important;
+}
+header nav a:hover { color: var(--t1) !important; background: rgba(255,255,255,.04) !important; }
+
+/* ── CONNECT WALLET BUTTON ──────────────────────── */
+header button {
+  padding: 8px 18px !important; border-radius: 10px !important;
+  font-size: .8rem !important; font-weight: 600 !important;
+  background: var(--grad) !important; border: none !important;
+  color: #fff !important; position: relative !important; overflow: hidden !important;
+  transition: box-shadow .3s !important; cursor: pointer !important;
+}
+header button::before {
+  content: '' !important; position: absolute !important; inset: 0 !important;
+  background: linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent) !important;
+  transform: translateX(-100%) !important; transition: transform .5s !important;
+}
+header button:hover::before { transform: translateX(100%) !important; }
+header button:hover { box-shadow: 0 4px 20px rgba(168,85,247,.3) !important; }
+
+/* ── CARDS ──────────────────────────────────────── */
+[class*="bg-cat-card"], [class*="bg-cat-dark"], .glass-card, [class*="glass-card"] {
+  background: rgba(14,14,22,.88) !important;
+  border-color: rgba(168,85,247,.12) !important;
+  backdrop-filter: blur(12px) !important; -webkit-backdrop-filter: blur(12px) !important;
+  border-radius: 16px !important;
+}
+[class*="rounded-2xl"][class*="bg-cat-card"],
+[class*="rounded-xl"][class*="bg-cat-card"] {
+  background: rgba(18,18,26,.7) !important;
+  border-color: rgba(168,85,247,.08) !important; border-radius: 14px !important;
+}
+
+/* ── ACTION BUTTONS ─────────────────────────────── */
+main button[class*="btn-glow"]:not([class*="rounded-full"]), main a[class*="btn-glow"] {
+  background: var(--grad) !important; border: none !important;
+  border-radius: 14px !important; font-weight: 600 !important;
+  color: #fff !important; position: relative !important; overflow: hidden !important;
+  transition: transform .3s, box-shadow .3s !important;
+}
+main button[class*="btn-glow"]:not([class*="rounded-full"])::after, main a[class*="btn-glow"]::after {
+  content: '' !important; position: absolute !important; inset: 0 !important;
+  background: linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent) !important;
+  transform: translateX(-100%) !important; transition: transform .6s !important; pointer-events: none !important;
+}
+main button[class*="btn-glow"]:not([class*="rounded-full"]):hover:not(:disabled)::after,
+main a[class*="btn-glow"]:hover::after { transform: translateX(100%) !important; }
+main button[class*="btn-glow"]:not([class*="rounded-full"]):hover:not(:disabled),
+main a[class*="btn-glow"]:hover { transform: translateY(-1px) !important; box-shadow: 0 6px 24px rgba(168,85,247,.35) !important; }
+main button[class*="btn-glow"]:disabled { opacity: .4 !important; cursor: not-allowed !important; }
+button[class*="bg-gradient"], a[class*="bg-gradient"] {
+  background: var(--grad) !important; border: none !important;
+  border-radius: 14px !important; font-weight: 600 !important; color: #fff !important;
+}
+
+/* ── OUTLINE BUTTONS ─────────────────────────────── */
+a[class*="border-cat-border"], button[class*="border-cat-border"] {
+  border: 1px solid var(--border) !important; background: rgba(255,255,255,.02) !important;
+  color: var(--t1) !important; border-radius: 14px !important;
+  transition: border-color .3s, transform .3s !important;
+}
+a[class*="border-cat-border"]:hover,
+button[class*="border-cat-border"]:hover:not(:disabled) {
+  border-color: rgba(168,85,247,.3) !important; transform: translateY(-1px) !important;
+}
+
+/* ── SWAP INNER BUTTONS ─────────────────────────── */
+button[class*="rounded-xl"][class*="bg-cat-card"],
+button[class*="rounded-full"][class*="bg-cat-card"] {
+  background: rgba(18,18,26,.8) !important; border-color: rgba(168,85,247,.15) !important;
+  border-radius: 12px !important; transition: border-color .2s, box-shadow .2s !important;
+}
+button[class*="rounded-xl"][class*="bg-cat-card"]:hover,
+button[class*="rounded-full"][class*="bg-cat-card"]:hover {
+  border-color: rgba(168,85,247,.35) !important; box-shadow: 0 0 14px rgba(168,85,247,.15) !important;
+}
+
+/* ── TABS ────────────────────────────────────────── */
+[class*="bg-cat-card"][class*="rounded-xl"] > button { border-radius: 10px !important; font-size: .82rem !important; }
+
+/* ── INPUTS ─────────────────────────────────────── */
+input[type="text"], input[type="number"], input[class*="bg-transparent"] { color: var(--t1) !important; font-family: 'Space Mono', monospace !important; }
+input::placeholder { color: var(--t3) !important; }
+
+/* ── GRADIENT TEXT ──────────────────────────────── */
+[class*="bg-gradient-to-r"][class*="bg-clip-text"],
+[class*="from-cat-purple"][class*="bg-clip-text"] {
+  background: var(--grad) !important;
+  -webkit-background-clip: text !important; -webkit-text-fill-color: transparent !important; background-clip: text !important;
+}
+[class*="text-cat-purple"],[class*="text-cat-pink"],[class*="text-cat-amber"] { font-family: 'Space Mono', monospace !important; font-weight: 700 !important; }
+
+/* ── MODAL ───────────────────────────────────────── */
+[class*="fixed"][class*="inset-0"][class*="bg-black"],
+[class*="fixed"][class*="inset-0"][class*="bg-opacity"] {
+  backdrop-filter: blur(6px) !important; background: rgba(5,5,8,.75) !important;
+}
+[class*="fixed"][class*="inset-0"] > [class*="bg-cat"],
+[class*="fixed"][class*="inset-0"] > div > [class*="bg-cat"] {
+  border-radius: 20px !important; background: rgba(12,12,20,.96) !important;
+  border-color: rgba(168,85,247,.15) !important; backdrop-filter: blur(24px) !important;
+}
+
+/* ── HIDE SVG cats — CSS cats inserted by inject.js ── */
+svg.animate-float  { display: none !important; }   /* hero cat */
+svg.animate-wobble { display: none !important; }   /* header cat */
+.relative.mb-8 > .absolute { display: none !important; } /* hero glow */
+
+/* ── HEADER MINI CSS CAT (1:1 from index(2).html) ── */
+.dc-hdr-cat { position:relative;width:32px;height:32px;flex-shrink:0; }
+.dc-hdr-cat .mc-body {
+  position:relative;width:28px;height:24px;
+  background:linear-gradient(135deg,#2a2a3e,#1e1e30);
+  border-radius:50% 50% 45% 45%;margin:6px auto 0;
+  border:1.5px solid rgba(168,85,247,.3);
+  box-shadow:0 0 12px rgba(168,85,247,.15);
+}
+.dc-hdr-cat .mc-ear {
+  position:absolute;top:-5px;width:0;height:0;
+  border-left:5px solid transparent;border-right:5px solid transparent;
+  border-bottom:8px solid #2a2a3e;
+}
+.dc-hdr-cat .mc-ear::after {
+  content:'';position:absolute;top:3px;left:-3px;
+  border-left:3px solid transparent;border-right:3px solid transparent;
+  border-bottom:5px solid #ec4899;opacity:.6;
+}
+.dc-hdr-cat .mc-ear.left  { left:3px;  transform:rotate(-10deg); }
+.dc-hdr-cat .mc-ear.right { right:3px; transform:rotate(10deg);  }
+.dc-hdr-cat .mc-eyes {
+  position:absolute;top:6px;left:50%;transform:translateX(-50%);
+  display:flex;gap:6px;
+}
+.dc-hdr-cat .mc-eye {
+  width:6px;height:6px;
+  background:radial-gradient(circle,#fbbf24,#f59e0b);
+  border-radius:50%;position:relative;
+  box-shadow:0 0 4px rgba(251,191,36,.4);
+}
+.dc-hdr-cat .mc-eye::after {
+  content:'';position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);width:2px;height:4px;
+  background:#111;border-radius:50%;
+}
+.dc-hdr-cat .mc-eye.drunk { height:4px;margin-top:1px; }
+.dc-hdr-cat .mc-eye.drunk::after { height:2.5px;width:1.5px; }
+.dc-hdr-cat .mc-nose {
+  position:absolute;top:13px;left:50%;transform:translateX(-50%);
+  width:3px;height:2px;background:#ec4899;border-radius:50%;
+}
+.dc-hdr-cat .mc-mug {
+  position:absolute;bottom:2px;right:-5px;
+  font-size:.5rem;filter:drop-shadow(0 0 3px rgba(251,191,36,.3));
+}
+/* Don't hide glow dives that are NOT the cat backdrop */
+.dc-cat-wrap { display: block; }
+
+/* ── HIDE original React GM button — replaced by inject.js bottom-bar ── */
+button.btn-glow.rounded-full.fixed,
+button[class*="btn-glow"][class*="rounded-full"][class*="fixed"] {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* ── HIDE original social buttons container — moved into inject.js bottom-bar ── */
+div.fixed.bottom-6.right-6,
+div[class*="fixed"][class*="bottom-6"][class*="right-6"] {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* ══════════════════════════════════════════════════
+   BOTTOM BAR — injected by inject.js
+   Pattern: 1:1 from index(2).html .bottom-bar
+   ══════════════════════════════════════════════════ */
+.dc-bottom-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 9000;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px clamp(1rem,4vw,2rem);
+  pointer-events: none;
+}
+.dc-bottom-bar > * { pointer-events: auto; }
+
+/* GM button */
+.dc-gm-btn {
+  width: 56px; height: 56px; border-radius: 50%; position: relative;
+  background: var(--grad);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: .7rem; font-weight: 700; letter-spacing: .5px;
+  font-family: 'Sora', sans-serif;
+  transition: all .3s; cursor: pointer; overflow: hidden;
+  border: none; outline: none;
+}
+.dc-gm-btn::before {
+  content: ''; position: absolute; inset: -2px; border-radius: 50%;
+  background: conic-gradient(var(--purple),var(--pink),var(--amber),var(--purple));
+  z-index: -1; animation: dcGmSpin 4s linear infinite;
+}
+.dc-gm-btn::after {
+  content: ''; position: absolute; inset: 2px; border-radius: 50%;
+  background: var(--grad); z-index: 0;
+}
+.dc-gm-btn span { position: relative; z-index: 1; }
+.dc-gm-btn:hover { transform: scale(1.1); }
+@keyframes dcGmSpin { to { transform: rotate(360deg); } }
+
+/* Social buttons */
+.dc-social-btns { display: flex; gap: 8px; }
+.dc-s-btn {
+  width: 40px; height: 40px; border-radius: 12px;
+  background: rgba(10,10,16,.7); backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--t2); transition: all .25s; cursor: pointer; text-decoration: none;
+}
+.dc-s-btn:hover { color: var(--t1); border-color: rgba(168,85,247,.3); box-shadow: 0 0 15px rgba(168,85,247,.1); }
+.dc-s-btn svg { width: 15px; height: 15px; }
+
+/* ── FAUCET TG BUTTON ───────────────────────────── */
+a[href*="litvm_faucet_bot"] { background: var(--grad) !important; border-color: transparent !important; color: #fff !important; border-radius: 14px !important; }
+
+/* ── MISC ────────────────────────────────────────── */
+[class*="bg-cat-card"] tbody tr:hover { background: rgba(168,85,247,.04) !important; }
+[data-rht-toaster] { z-index: 9999 !important; }
+[data-rht-toaster] > div { border-radius: 14px !important; background: rgba(18,18,26,.96) !important; border: 1px solid rgba(168,85,247,.2) !important; backdrop-filter: blur(20px) !important; color: var(--t1) !important; }
+footer { border-top-color: var(--border) !important; }
+::-webkit-scrollbar { width:6px; height:6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: rgba(168,85,247,.22); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(168,85,247,.38); }
+.particle { animation: dcParticle var(--duration,15s) linear var(--delay,0s) infinite !important; }
+@keyframes dcParticle { 0%{transform:translateY(0) scale(1);opacity:.2} 85%{opacity:.1} 100%{transform:translateY(-100vh) scale(.4);opacity:0} }
+
+/* ── MOBILE ─────────────────────────────────────── */
+@media (max-width: 768px) {
+  header.sticky, header[class*="sticky"] { top:8px !important; height:52px !important; padding:0 4px 0 12px !important; }
+  main { padding-top: 72px !important; }
+  .dc-gm-btn { width:48px; height:48px; }
+  .dc-s-btn  { width:36px; height:36px; }
+}
+
+/* ── REDUCED MOTION ─────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  body::after, .dc-glow-1,.dc-glow-2,.dc-glow-3, .dc-gm-btn::before, .particle { animation:none !important; }
+}
+
+
+</style>
+</head><body class="bg-mesh min-h-screen"><header class="sticky top-0 z-50 border-b border-cat-border/50 bg-cat-darker/80 backdrop-blur-xl"><div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between"><a class="flex items-center gap-2 group" href="/"><div class="relative"><svg width="36" height="36" viewBox="0 0 100 100" class="animate-wobble" xmlns="http://www.w3.org/2000/svg"><polygon points="20,35 30,5 42,30" fill="#a855f7"></polygon><polygon points="80,35 70,5 58,30" fill="#a855f7"></polygon><polygon points="24,33 32,12 40,30" fill="#ec4899"></polygon><polygon points="76,33 68,12 60,30" fill="#ec4899"></polygon><ellipse cx="50" cy="52" rx="32" ry="28" fill="#a855f7"></ellipse><ellipse cx="50" cy="54" rx="28" ry="24" fill="#1e1e2e"></ellipse><g><circle cx="38" cy="48" r="7" fill="#f59e0b" opacity="0.9"></circle><circle cx="62" cy="48" r="7" fill="#f59e0b" opacity="0.9"></circle><path d="M38,48 Q38,44 42,44 Q46,44 46,48 Q46,52 42,52 Q39,52 39,49" fill="none" stroke="#0a0a0f" stroke-width="1.5"></path><path d="M62,48 Q62,44 66,44 Q70,44 70,48 Q70,52 66,52 Q63,52 63,49" fill="none" stroke="#0a0a0f" stroke-width="1.5"></path></g><ellipse cx="28" cy="58" rx="6" ry="3" fill="#ec4899" opacity="0.4"></ellipse><ellipse cx="72" cy="58" rx="6" ry="3" fill="#ec4899" opacity="0.4"></ellipse><ellipse cx="50" cy="58" rx="3" ry="2" fill="#ec4899"></ellipse><path d="M42,63 Q46,68 50,63 Q54,68 58,63" fill="none" stroke="#e2e8f0" stroke-width="1.5" stroke-linecap="round"></path><line x1="15" y1="55" x2="32" y2="57" stroke="#64748b" stroke-width="1"></line><line x1="15" y1="60" x2="32" y2="60" stroke="#64748b" stroke-width="1"></line><line x1="68" y1="57" x2="85" y2="55" stroke="#64748b" stroke-width="1"></line><line x1="68" y1="60" x2="85" y2="60" stroke="#64748b" stroke-width="1"></line><rect x="72" y="70" width="12" height="14" rx="2" fill="#f59e0b" opacity="0.8"></rect><rect x="70" y="68" width="16" height="4" rx="2" fill="#fbbf24" opacity="0.6"></rect><path d="M84,74 Q90,74 90,78 Q90,82 84,82" fill="none" stroke="#f59e0b" stroke-width="2"></path><circle cx="75" cy="67" r="2" fill="white" opacity="0.6"></circle><circle cx="80" cy="66" r="1.5" fill="white" opacity="0.5"></circle><circle cx="78" cy="65" r="1" fill="white" opacity="0.4"></circle></svg></div><span class="font-display text-xl bg-gradient-to-r from-cat-purple to-cat-pink bg-clip-text text-transparent hidden sm:block">DrunkenCats</span></a><nav class="flex items-center gap-1"><a class="px-4 py-2 rounded-xl text-sm font-medium transition-all text-cat-muted hover:text-cat-text hover:bg-cat-card/50" href="/swap/">Swap</a><a class="px-4 py-2 rounded-xl text-sm font-medium transition-all text-cat-muted hover:text-cat-text hover:bg-cat-card/50" href="/liquidity/">Liquidity</a><a class="px-4 py-2 rounded-xl text-sm font-medium transition-all text-cat-muted hover:text-cat-text hover:bg-cat-card/50" href="/portfolio/">Portfolio</a><a class="px-4 py-2 rounded-xl text-sm font-medium transition-all text-cat-muted hover:text-cat-text hover:bg-cat-card/50" href="/faucet/">Faucet</a></nav><button class="btn-glow px-6 py-2.5 rounded-xl text-sm font-bold text-white">Connect Wallet</button></div></header><main class="pb-20"><main class="max-w-7xl mx-auto px-4 sm:px-6 py-8"><div class="w-full max-w-2xl mx-auto space-y-6 animate-slide-up"><h1 class="font-display text-3xl mb-8">Test Token Faucets</h1><div class="glass-card p-6"><div class="flex items-center justify-between mb-4"><div><h2 class="font-display text-xl">dcUSD Faucet</h2><p class="text-sm text-cat-muted mt-1">Get 100 dcUSD every 24 hours</p></div><div class="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold" style="background:#3b82f622;color:#3b82f6">USD</div></div><div class="bg-cat-dark/50 p-4 rounded-lg mb-4"><div class="text-sm text-cat-muted mb-1">Your Balance</div><div class="text-2xl font-mono font-bold">0.00<!-- --> dcUSD</div></div><button class="w-full py-3 rounded-xl btn-glow text-white font-bold" disabled="">Connect Wallet</button></div><div class="glass-card p-6"><div class="flex items-center justify-between mb-4"><div><h2 class="font-display text-xl">DCAT Faucet</h2><p class="text-sm text-cat-muted mt-1">Get 1 DCAT every 24 hours</p></div><div class="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold" style="background:#a855f722;color:#a855f7">🐱</div></div><div class="bg-cat-dark/50 p-4 rounded-lg mb-4"><div class="text-sm text-cat-muted mb-1">Your Balance</div><div class="text-2xl font-mono font-bold">0<!-- --> DCAT</div></div><button class="w-full py-3 rounded-xl btn-glow text-white font-bold" disabled="">Connect Wallet</button></div><div class="glass-card p-6"><div class="flex items-center justify-between mb-4"><div><h2 class="font-display text-xl">zkLTC Faucet</h2><p class="text-sm text-cat-muted mt-1">Get gas tokens from the LitVM faucet</p></div><div class="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold" style="background:#f59e0b22;color:#f59e0b">⚡</div></div><p class="text-sm text-cat-muted mb-4">Get free zkLTC to pay for gas fees on LiteForge testnet</p><div class="flex gap-3"><a href="https://liteforge.hub.caldera.xyz/" target="_blank" rel="noopener noreferrer" class="flex-1 py-3 rounded-xl btn-glow text-white font-bold text-center block text-sm">Official Faucet ↗</a><a href="https://t.me/litvm_faucet_bot" target="_blank" rel="noopener noreferrer" class="flex-1 py-3 rounded-xl text-white font-bold text-center block text-sm border transition-colors" style="background:#0088cc22;border-color:#0088cc55;color:#0088cc">TG Faucet ↗</a></div></div><div class="glass-card p-6 border border-cat-cyan/20"><h3 class="font-display text-lg mb-3 text-cat-cyan">💡 About Test Tokens</h3><ul class="space-y-2.5 text-sm text-cat-muted"><li class="flex items-start gap-2"><span class="text-cat-lime mt-0.5">✓</span><span><span class="text-cat-text font-semibold">dcUSD</span> — Test stablecoin. Claim 100 tokens once every 24 hours directly on-chain.</span></li><li class="flex items-start gap-2"><span class="text-cat-lime mt-0.5">✓</span><span><span class="text-cat-text font-semibold">DCAT</span> — DrunkenCats token. Claim 1 token per day, cooldown resets every 24 hours.</span></li><li class="flex items-start gap-2"><span class="text-cat-lime mt-0.5">✓</span><span><span class="text-cat-text font-semibold">zkLTC</span> — Native gas token. Required for every transaction. Get it free from the Official or Telegram faucet.</span></li><li class="flex items-start gap-2"><span class="text-cat-muted mt-0.5">ℹ</span><span>All tokens are on LiteForge testnet and have no real monetary value. Use them freely to explore swaps, liquidity, and check-ins.</span></li></ul></div></div></main><div class="fixed bottom-6 right-6 flex flex-col gap-3 z-40"><div class="relative"><button class="w-12 h-12 rounded-full flex items-center justify-center text-cat-muted opacity-50 cursor-not-allowed transition-transform" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1)" title="Docs coming soon" disabled=""><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></button></div><a href="https://x.com/drunkencatsxyz" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg" style="background:#000;border:1px solid rgba(255,255,255,0.15)" title="Follow on X"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.259 5.63 5.905-5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg></a></div></main><div data-rht-toaster="" style="position:fixed;z-index:9999;top:16px;left:16px;right:16px;bottom:16px;pointer-events:none"></div><div class="fixed inset-0 pointer-events-none overflow-hidden -z-10"><div class="particle absolute rounded-full opacity-20" style="width:8px;height:8px;left:10%;bottom:-20px;background:#a855f7;--duration:10s;--delay:0s"></div><div class="particle absolute rounded-full opacity-20" style="width:12px;height:12px;left:26%;bottom:-20px;background:#ec4899;--duration:13s;--delay:2s"></div><div class="particle absolute rounded-full opacity-20" style="width:16px;height:16px;left:42%;bottom:-20px;background:#a855f7;--duration:16s;--delay:4s"></div><div class="particle absolute rounded-full opacity-20" style="width:20px;height:20px;left:58%;bottom:-20px;background:#ec4899;--duration:19s;--delay:6s"></div><div class="particle absolute rounded-full opacity-20" style="width:24px;height:24px;left:74%;bottom:-20px;background:#a855f7;--duration:22s;--delay:8s"></div><div class="particle absolute rounded-full opacity-20" style="width:28px;height:28px;left:90%;bottom:-20px;background:#ec4899;--duration:25s;--delay:10s"></div></div><script src="/_next/static/chunks/webpack-bcc54b1dc9f2db2e.js" async=""></script><script>(self.__next_f=self.__next_f||[]).push([0]);self.__next_f.push([2,null])</script><script>self.__next_f.push([1,"1:HL[\"/_next/static/css/947253a1e855b7f2.css\",\"style\"]\n"])</script><script>self.__next_f.push([1,"2:I[2846,[],\"\"]\n4:I[9286,[\"480\",\"static/chunks/480-acc42c0ebf634cd5.js\",\"64\",\"static/chunks/64-66340eb1755c93b9.js\",\"120\",\"static/chunks/app/faucet/page-f3f1d3ba5c8e809d.js\"],\"FaucetPage\"]\n5:I[4707,[],\"\"]\n6:I[6423,[],\"\"]\n7:I[2826,[\"480\",\"static/chunks/480-acc42c0ebf634cd5.js\",\"64\",\"static/chunks/64-66340eb1755c93b9.js\",\"648\",\"static/chunks/648-475d793092845840.js\",\"185\",\"static/chunks/app/layout-771502fd57edcf2e.js\"],\"ClientProviders\"]\n8:I[8392,[\"480\",\"static/chunks/480-acc42c0ebf634cd5.js\",\"64\",\"static/chunks/64-66340eb1755c93b9.js\",\"648\",\"static/chunks/648-475d793092845840.js\",\"185\",\"static/chunks/app/layout-771502fd57edcf2e.js\"],\"CheckInButton\"]\n9:I[1198,[\"480\",\"static/chunks/480-acc42c0ebf634cd5.js\",\"64\",\"static/chunks/64-66340eb1755c93b9.js\",\"648\",\"static/chunks/648-475d793092845840.js\",\"185\",\"static/chunks/app/layout-771502fd57edcf2e.js\"],\"SocialButtons\"]\nb:I[1060,[],\"\"]\nc:[]\n"])</script><script>self.__next_f.push([1,"0:[\"$\",\"$L2\",null,{\"buildId\":\"nutwSpA4UqIyyr2c6EODh\",\"assetPrefix\":\"\",\"urlParts\":[\"\",\"faucet\",\"\"],\"initialTree\":[\"\",{\"children\":[\"faucet\",{\"children\":[\"__PAGE__\",{}]}]},\"$undefined\",\"$undefined\",true],\"initialSeedData\":[\"\",{\"children\":[\"faucet\",{\"children\":[\"__PAGE__\",{},[[\"$L3\",[\"$\",\"main\",null,{\"className\":\"max-w-7xl mx-auto px-4 sm:px-6 py-8\",\"children\":[\"$\",\"$L4\",null,{}]}],null],null],null]},[null,[\"$\",\"$L5\",null,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\",\"faucet\",\"children\"],\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L6\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"notFoundStyles\":\"$undefined\"}]],null]},[[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/css/947253a1e855b7f2.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"en\",\"children\":[\"$\",\"body\",null,{\"className\":\"bg-mesh min-h-screen\",\"children\":[\"$\",\"$L7\",null,{\"children\":[[\"$\",\"$L5\",null,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\"],\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L6\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"}],[\"$\",\"div\",null,{\"style\":{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"},\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}}],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"},\"children\":\"404\"}],[\"$\",\"div\",null,{\"style\":{\"display\":\"inline-block\"},\"children\":[\"$\",\"h2\",null,{\"style\":{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0},\"children\":\"This page could not be found.\"}]}]]}]}]],\"notFoundStyles\":[]}],[\"$\",\"$L8\",null,{}],[\"$\",\"$L9\",null,{}]]}]}]}]],null],null],\"couldBeIntercepted\":false,\"initialHead\":[null,\"$La\"],\"globalErrorComponent\":\"$b\",\"missingSlots\":\"$Wc\"}]\n"])</script><script>self.__next_f.push([1,"a:[[\"$\",\"meta\",\"0\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}],[\"$\",\"meta\",\"1\",{\"charSet\":\"utf-8\"}],[\"$\",\"title\",\"2\",{\"children\":\"DrunkenCats DEX — Trade on LitVM\"}],[\"$\",\"meta\",\"3\",{\"name\":\"description\",\"content\":\"Decentralized exchange on LitVM LiteForge. Swap tokens, provide liquidity, and earn fees.\"}]]\n3:null\n"])</script>
+
+
+<script id="dc-inject">
+/* =======================================================
+   DrunkenCats inject.js v6
+   1. Glow orbs
+   2. Hero CSS cat (persists through Next.js SPA nav)
+   3. Header mini CSS cat (replaces SVG)
+   4. Fixed bottom-bar (GM + social)
+   ======================================================= */
+(function () {
+  'use strict';
+
+  var HERO_CAT = [
+    '<div class="dc-cat-wrap" aria-hidden="true">',
+      '<div class="cat-mascot">',
+        '<div class="dizzy-stars">✦ ✧ ✦</div>',
+        '<div class="cat-body">',
+          '<div class="cat-ear left"></div>',
+          '<div class="cat-ear right"></div>',
+          '<div class="cat-face">',
+            '<div class="cat-eyes">',
+              '<div class="cat-eye"></div>',
+              '<div class="cat-eye drunk"></div>',
+            '</div>',
+            '<div class="cat-nose"></div>',
+            '<div class="cat-mouth"></div>',
+            '<div class="cat-blush left"></div>',
+            '<div class="cat-blush right"></div>',
+          '</div>',
+          '<div class="beer-mug">🍺</div>',
+        '</div>',
+      '</div>',
+    '</div>'
+  ].join('');
+
+  var HDR_CAT = [
+    '<div class="dc-hdr-cat" aria-hidden="true">',
+      '<div class="mc-body">',
+        '<div class="mc-ear left"></div>',
+        '<div class="mc-ear right"></div>',
+        '<div class="mc-eyes">',
+          '<div class="mc-eye"></div>',
+          '<div class="mc-eye drunk"></div>',
+        '</div>',
+        '<div class="mc-nose"></div>',
+        '<div class="mc-mug">🍺</div>',
+      '</div>',
+    '</div>'
+  ].join('');
+
+  var X_SVG   = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.259 5.63 5.905-5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>';
+  var DOC_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>';
+
+  /* ── GLOW ORBS ────────────────────────────────── */
+  function addGlows() {
+    if (document.querySelector('.dc-glow')) return;
+    ['dc-glow dc-glow-1','dc-glow dc-glow-2','dc-glow dc-glow-3'].forEach(function(c){
+      var d = document.createElement('div');
+      d.className = c; d.setAttribute('aria-hidden','true');
+      document.body.insertBefore(d, document.body.firstChild);
+    });
+  }
+
+  /* ── HERO CAT ─────────────────────────────────── */
+  function insertHeroCat() {
+    var p = window.location.pathname;
+    if (p !== '/' && p !== '/index.html' && p !== '') return;
+    if (document.querySelector('.dc-cat-wrap')) return;
+    var svg = document.querySelector('svg.animate-float');
+    if (!svg) return;
+    var container = svg.parentElement;
+    if (!container) return;
+    var tmp = document.createElement('div');
+    tmp.innerHTML = HERO_CAT;
+    container.insertBefore(tmp.firstChild, container.firstChild);
+  }
+
+  /* ── HEADER CAT ───────────────────────────────── */
+  function insertHeaderCat() {
+    if (document.querySelector('.dc-hdr-cat')) return;
+    var wobble = document.querySelector('header svg.animate-wobble');
+    if (!wobble) return;
+    var logoLink = wobble.closest('a') || wobble.parentElement;
+    if (!logoLink) return;
+    var tmp = document.createElement('div');
+    tmp.innerHTML = HDR_CAT;
+    logoLink.insertBefore(tmp.firstChild, logoLink.firstChild);
+  }
+
+  /* ── BOTTOM BAR ───────────────────────────────── */
+  function buildBar() {
+    if (document.querySelector('.dc-bottom-bar')) return;
+    var xHref = 'https://x.com/drunkencatsxyz';
+    var docsHref = '#';
+    var orig = document.querySelector(
+      'div.fixed.bottom-6.right-6, div[class*="fixed"][class*="bottom-6"][class*="right-6"]'
+    );
+    if (orig) {
+      orig.querySelectorAll('a').forEach(function(a){
+        var h = a.getAttribute('href') || '';
+        if (h.indexOf('x.com')!==-1||h.indexOf('twitter')!==-1) xHref=h;
+        else if (h&&h!=='#') docsHref=h;
+      });
+    }
+    var bar = document.createElement('div');
+    bar.className = 'dc-bottom-bar';
+    var gm = document.createElement('button');
+    gm.className = 'dc-gm-btn'; gm.setAttribute('aria-label','Check-in / GM');
+    gm.innerHTML = '<span>GM</span>';
+    gm.addEventListener('click', function(){
+      var t = document.querySelector(
+        'button.btn-glow.rounded-full.fixed,button[class*="btn-glow"][class*="rounded-full"][class*="fixed"]'
+      );
+      if (t) t.click();
+    });
+    var social = document.createElement('div'); social.className = 'dc-social-btns';
+    var xBtn = document.createElement('a');
+    xBtn.className='dc-s-btn'; xBtn.href=xHref; xBtn.target='_blank';
+    xBtn.rel='noopener noreferrer'; xBtn.setAttribute('aria-label','X / Twitter');
+    xBtn.innerHTML=X_SVG;
+    var dBtn = document.createElement('a');
+    dBtn.className='dc-s-btn'; dBtn.href=docsHref;
+    dBtn.setAttribute('aria-label','Documentation'); dBtn.innerHTML=DOC_SVG;
+    if (docsHref==='#'){
+      dBtn.style.opacity='.4'; dBtn.style.cursor='not-allowed';
+      dBtn.addEventListener('click',function(e){e.preventDefault();});
+    } else { dBtn.target='_blank'; dBtn.rel='noopener noreferrer'; }
+    social.appendChild(xBtn); social.appendChild(dBtn);
+    bar.appendChild(gm); bar.appendChild(social);
+    document.body.appendChild(bar);
+  }
+
+  function syncGMLabel() {
+    var r = document.querySelector(
+      'button.btn-glow.rounded-full.fixed,button[class*="btn-glow"][class*="rounded-full"][class*="fixed"]'
+    );
+    var s = document.querySelector('.dc-gm-btn span');
+    if (r&&s){var t=r.textContent.trim(); if(t&&t!==s.textContent)s.textContent=t;}
+  }
+
+  /* ── FULL INIT ────────────────────────────────── */
+  function init() {
+    addGlows();
+    insertHeroCat();
+    insertHeaderCat();
+    buildBar();
+    syncGMLabel();
+  }
+
+  /* ── SPA NAVIGATION (Next.js App Router) ───────── */
+  /* Next.js uses pushState for client-side nav — no page reload.
+     Poll URL every 200ms; on change, remove stale cats and re-inject. */
+  var lastUrl = location.href;
+  setInterval(function(){
+    if (location.href === lastUrl) return;
+    lastUrl = location.href;
+    /* Remove old hero cat — only belongs on home */
+    var old = document.querySelector('.dc-cat-wrap');
+    if (old) old.remove();
+    /* Header cat may get re-rendered by React, re-inject */
+    var oldH = document.querySelector('.dc-hdr-cat');
+    if (oldH) oldH.remove();
+    setTimeout(init, 100);
+    setTimeout(init, 500);
+  }, 200);
+
+  /* Browser back/forward */
+  window.addEventListener('popstate', function(){
+    setTimeout(function(){
+      var old=document.querySelector('.dc-cat-wrap'); if(old)old.remove();
+      var oldH=document.querySelector('.dc-hdr-cat'); if(oldH)oldH.remove();
+      init();
+    }, 100);
+    setTimeout(init, 500);
+  });
+
+  /* ── BOOT ─────────────────────────────────────── */
+  if (document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else { init(); }
+  setTimeout(init, 150);
+  setTimeout(init, 700);
+  setTimeout(init, 1800);
+
+  /* MutationObserver — keep bar and header cat alive */
+  new MutationObserver(function(){
+    buildBar(); syncGMLabel();
+    if (!document.querySelector('.dc-hdr-cat')) insertHeaderCat();
+    var p=window.location.pathname;
+    if ((p==='/'||p===''||p==='/index.html')&&!document.querySelector('.dc-cat-wrap')) insertHeroCat();
+  }).observe(document.body,{childList:true,subtree:false});
+
+})();
+
+</script>
+</body></html>
